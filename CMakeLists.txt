@@ -6,7 +6,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(plugin SHARED plugin.cpp)
 
-target_include_directories(plugin PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+# Подключаем Dobby
+add_library(dobby STATIC IMPORTED)
+set_target_properties(dobby PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/Dobby/lib/arm64-v8a/libdobby.a)
 
-find_library(log-lib log)
-target_link_libraries(plugin ${log-lib} dl)
+target_include_directories(plugin PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/Dobby/include
+)
+
+target_link_libraries(plugin
+    dobby
+    log
+    dl
+)
