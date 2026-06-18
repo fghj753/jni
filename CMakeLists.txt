@@ -4,15 +4,20 @@ project(plugin)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_library(plugin SHARED plugin.cpp)
+# Скачиваем и собираем Dobby
+include(FetchContent)
+FetchContent_Declare(
+    dobby
+    GIT_REPOSITORY https://github.com/jmpews/Dobby.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(dobby)
 
-# Подключаем Dobby
-add_library(dobby STATIC IMPORTED)
-set_target_properties(dobby PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/Dobby/lib/arm64-v8a/libdobby.a)
+add_library(plugin SHARED plugin.cpp)
 
 target_include_directories(plugin PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/Dobby/include
+    ${dobby_SOURCE_DIR}/include
 )
 
 target_link_libraries(plugin
